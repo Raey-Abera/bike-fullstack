@@ -1,0 +1,15 @@
+body{
+  padding-top:80px;
+  word-wrap:break-word;
+  background-color: rgb(181, 148, 125);
+}
+img{
+  height: 300px;
+}
+.jumbotron{
+  /* background-color: white; */
+  width: 50%;
+  margin-left: 25%;
+  background-color: rgb(221, 245, 232);
+  color:rgb(181, 148, 125);
+}
