@@ -3,18 +3,26 @@ module.exports = function(app, passport, db) {
 // normal routes ===============================================================
 
     // show the home page (will also have our login links)
-    app.get('/', function(req, res) {
+    app.get('/', function(req, res) { //interface renders index.ejs file.
         res.render('index.ejs');
     });
 
     // PROFILE SECTION =========================
-    app.get('/profile', isLoggedIn, function(req, res) {
-        db.collection('bikes').find().toArray((err, result) => {
+    app.get('/profile', isLoggedIn, function(req, res) {//isLoggedIn is a helper method that enables the function to run
+         db.collection('bikes').find().toArray((err, result) => {
           if (err) return console.log(err)
-          res.render('profile.ejs', {
-            user : req.user,
-            messages: result
+
+        db.collection('stations').find().toArray((err, locations) => {
+          if (err) return console.log(err)
+
+        res.render('profile.ejs', {
+          user : req.user,
+          messages: result,
+          stations:locations
+        })
+
           })
+
         })
     });
 
@@ -26,26 +34,35 @@ module.exports = function(app, passport, db) {
 
 // message board routes ===============================================================
 
-    app.post('/messages', (req, res) => {
-      db.collection('bikes').save({name: req.body.name, msg: req.body.msg,thumbUp: 0, thumbDown:0}, (err, result) => {
+    app.post('/messages', (req, res) => {// this route needs to match the action on the form
+      db.collection('bikes').save({name: req.body.name, msg: req.body.msg}, (err, result) => {//thumbUp and thumbDown are hardcoded but name and msg are coming from inputs in the same form
         if (err) return console.log(err)
         console.log('saved to database')
-        res.redirect('/profile')
+        res.redirect('/profile')// trggering a get which is a new url
       })
     })
 
     app.put('/messages', (req, res) => {
       db.collection('bikes')
       .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
-        // $set: {
-        //   thumbUp:req.body.thumbUp + 1
-        // }
         sort: {_id: -1},
         upsert: true
       }, (err, result) => {
         if (err) return res.send(err)
         res.send(result)
       })
+    })
+
+    app.post('/borrow', (req, res) => {
+      db.collection('stations')
+      .findOneAndUpdate(
+        { "name" : req.body.station },
+      {$push: { loans: req.body.userid }},
+      (err, result) => {
+        console.log(err, result);
+       if (err) return res.send(err)
+       res.redirect('/profile')
+     })
     })
 
     app.delete('/messages', (req, res) => {

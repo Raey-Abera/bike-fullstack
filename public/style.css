@@ -13,3 +13,10 @@ img{
   background-color: rgb(221, 245, 232);
   color:rgb(181, 148, 125);
 }
+h2{
+  font-size:15px;
+}
+
+#borrows{
+  background-color: white;
+}
