@@ -61,11 +61,12 @@
          <button id="grabBike" type="button" name="button">See Bikes </button>
          <p id="totalBikes" ></p>
 
-           <% for(var i=0; i<stations.length; i++) {%>
+           <% for(var i= stations.length -1; i<stations.length; i++) {%>
 
-             <p><%= stations[i].loans %></p>
+             <p> `${<%= stations[i].total_bikes  -  stations[i].loans.length %>}`</p>
 
            <% } %>
+
 
              <input type="hidden" name="userid" value="<%= user._id %>">
 
